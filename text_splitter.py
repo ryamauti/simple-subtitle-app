@@ -1,7 +1,14 @@
 import json
 
 def wordlen(sizes, s):    
-    soma = sum([sizes[c] for c in s])
+    soma = 0
+    for c in s:
+        if c in sizes:
+            soma += sizes[c]
+        else:
+            soma += 40
+            print(f'!!! CARACTERE NÃO ENCONTRADO: {c} !!!')
+    #soma = sum([sizes[c] for c in s])
     return soma - len(s)
 
 

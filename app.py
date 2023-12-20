@@ -2,6 +2,7 @@ import gradio as gr
 from whisper_transcriber import VideoTranscribe as Vtran
 from text_splitter import text_splitter
 from whisper_aligner import SubtitileAligner as SAlign
+from consulta_dicionario import consultanome
 
 # Functions
 def squaredraw(nivel, altura_legenda_var, video_pos_top):    
@@ -35,12 +36,12 @@ def squaredraw(nivel, altura_legenda_var, video_pos_top):
     return gr.HTML(f"<div class='square' style={style}></div>", visible=True, elem_id='flag'), altura_legenda_var   
 
 
-def load_audio():
-    return gr.Audio('temp.mp3')                   ## TEMP !!!
+def load_audio(nomeprj):
+    return gr.Audio(f'{nomeprj}.mp3')
 
 
-def reloadtext():    
-    with open('temp_r.txt', 'r') as f:            ## TEMP !!!        
+def reloadtext(nomeprj):    
+    with open(f'{nomeprj}_r.txt', 'r') as f:
         texto = f.read()
     return texto
 
@@ -81,16 +82,21 @@ customcss = """
 
 demo = gr.Blocks(css=customcss)    
 with demo:
-    altura_legenda_var = gr.State(730)    
-    
+    altura_legenda_var = gr.State(730)        
+
     # Accordion's
+    with gr.Row():
+        nmproj = gr.Textbox(label="Nome do projeto", interactive=True)
+        randombtn = gr.Button("Nome aleatório")
+        randombtn.click(consultanome, outputs=nmproj)
+
     parte1 = gr.Accordion("1. Vídeo inicial e altura da legenda", open=True)
     parte2 = gr.Accordion("2. Ajustes no texto da transcrição", open=False)
     parte3 = gr.Accordion("3. Ajustes no vídeo final e download", open=False)
 
     with parte1:
-        def video_progress(video, progress=gr.Progress()):                
-            vt = Vtran(video, 'temp')                      ## TEMP !!!
+        def video_progress(video, nomeprj, progress=gr.Progress()):                
+            vt = Vtran(video, nomeprj)                      
             log, texto = vt.run(progress=progress)
             return log, texto     
                 
@@ -108,15 +114,15 @@ with demo:
         audio = gr.Audio()    
         text = gr.Textbox(label="Transcrição. Alterar aqui de acordo com o que se queira", interactive=True, autoscroll=False, lines=10)
         with gr.Row():
-            btnaud = gr.Button("Carregar audio").click(fn=load_audio, inputs=None, outputs=audio)
-            btntxt = gr.Button("Reverter texto", variant='stop').click(fn=reloadtext, inputs=None, outputs=text)
+            btnaud = gr.Button("Carregar audio").click(fn=load_audio, inputs=nmproj, outputs=audio)
+            btntxt = gr.Button("Reverter texto", variant='stop').click(fn=reloadtext, inputs=nmproj, outputs=text)
             btngen = gr.Button("Confirmar e gerar", variant='primary')
 
-    btnvideo.click(fn=video_progress, inputs=vid, outputs=[progresstranscribe, text])
+    btnvideo.click(fn=video_progress, inputs=[vid, nmproj], outputs=[progresstranscribe, text])
 
     with parte3:    
-        def render_progress(texto_ajustado, altura_leg, progress=gr.Progress()):                
-            sa = SAlign(texto_ajustado, 'temp')                      ## TEMP !!!            
+        def render_progress(texto_ajustado, altura_leg, nomeprj, progress=gr.Progress()):                
+            sa = SAlign(texto_ajustado, nomeprj)
             sa.define_altura(altura_leg)
             video = sa.run(progress=progress)
             return video     
@@ -128,9 +134,13 @@ with demo:
         videosaida = gr.Video(show_share_button=True)        
 
     btngen.click(fn=gera_legenda, inputs=text, outputs=textsplit)
-    btnrender.click(fn=render_progress, inputs=[textsplit, altura_legenda_var], outputs=videosaida)
+    btnrender.click(fn=render_progress, inputs=[textsplit, altura_legenda_var, nmproj], outputs=videosaida)
 
     
+
+
+#demo.queue()
+
 if __name__ == "__main__":    
     demo.launch(show_error=True, share=False, server_name="0.0.0.0", server_port=7860)
 

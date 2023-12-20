@@ -12,7 +12,7 @@ def float_to_s(f) -> str:
 class VideoTranscribe:
     def __init__(self, videofile, out_tag) -> None:
         self.tag = out_tag
-        self.modelpath = "models/local_whisper_model.pt"         ## ALTERAR AQUI
+        self.modelpath = "../subtitles/models/local_whisper_model.pt"
         self.videofile = videofile
         self.localvideofile = f'{self.tag}.mp4'
         self.localaudiofile = f'{self.tag}.mp3'

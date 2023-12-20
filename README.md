@@ -34,13 +34,13 @@ Audio e Vídeo
 
 
 ### O que ele não faz:
-- [ ] Criar arquivo requirements.txt
+- [x] Criar arquivo requirements.txt
 - [ ] Criar instalador
 
 Ele confia muito em arquivos locais, e usa o nome "temp" pra tudo.
 - [ ] Desacoplar ao máximo de arquivos locais
-- [ ] Permitir customização de nome de arquivo
-- [ ] Pegar nome com seleção aleatória
+- [x] Permitir customização de nome de arquivo
+- [x] Pegar nome com seleção aleatória
 - [ ] Pegar nome com contexto dos primeiros segundos de áudio
 
 Ele não oferece customização nenhuma de legenda

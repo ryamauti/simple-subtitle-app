@@ -9,7 +9,7 @@ def float_to_s(f) -> str:
 
 class SubtitileAligner:
     def __init__(self, texto_ajustado, out_tag) -> None:
-        self.modelpath = "models/local_whisper_model.pt"        ## ALTERAR AQUI
+        self.modelpath = "../subtitles/models/local_whisper_model.pt"
         self.cudadevice = "cpu"
         self.tag = out_tag        
         self.aligned_text = texto_ajustado
@@ -25,7 +25,6 @@ class SubtitileAligner:
         
          
     def align(self, model):
-        print(self.aligned_text)
         saida = model.align(self.localaudiofile, self.aligned_text, language="pt", original_split=True, regroup=False)
         whisper_result = saida.to_dict()
         whisper_wrs = whisper_result['segments']
