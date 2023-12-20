@@ -9,7 +9,7 @@ def float_to_s(f) -> str:
 
 class SubtitileAligner:
     def __init__(self, texto_ajustado, out_tag) -> None:
-        self.modelpath = "../subtitles/models/local_whisper_model.pt"
+        self.modelpath = "models/local_whisper_model.pt"
         self.cudadevice = "cpu"
         self.tag = out_tag        
         self.aligned_text = texto_ajustado
